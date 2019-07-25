@@ -164,10 +164,10 @@ class DeltaPerformer : public FileWriter {
   // Compare |calculated_hash| with source hash in |operation|, return false and
   // dump hash and set |error| if don't match.
   // |source_fd| is the file descriptor of the source partition.
-  static bool ValidateSourceHash(const brillo::Blob& calculated_hash,
-                                 const InstallOperation& operation,
-                                 const FileDescriptorPtr source_fd,
-                                 ErrorCode* error);
+  // static bool ValidateSourceHash(const brillo::Blob& calculated_hash,
+  //                                const InstallOperation& operation,
+  //                                const FileDescriptorPtr source_fd,
+  //                                ErrorCode* error);
 
  private:
   friend class DeltaPerformerTest;

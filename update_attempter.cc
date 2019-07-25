@@ -111,8 +111,8 @@ ErrorCode GetErrorCodeForAction(AbstractAction* action,
     return ErrorCode::kOmahaRequestError;
   if (type == OmahaResponseHandlerAction::StaticType())
     return ErrorCode::kOmahaResponseHandlerError;
-  if (type == FilesystemVerifierAction::StaticType())
-    return ErrorCode::kFilesystemVerifierError;
+  // if (type == FilesystemVerifierAction::StaticType())
+  //   return ErrorCode::kFilesystemVerifierError;
   if (type == PostinstallRunnerAction::StaticType())
     return ErrorCode::kPostinstallRunnerError;
 
@@ -622,8 +622,8 @@ void UpdateAttempter::BuildUpdateActions(bool interactive) {
           std::make_unique<LibcurlHttpFetcher>(GetProxyResolver(),
                                                system_state_->hardware()),
           false));
-  shared_ptr<FilesystemVerifierAction> filesystem_verifier_action(
-      new FilesystemVerifierAction());
+  // shared_ptr<FilesystemVerifierAction> filesystem_verifier_action(
+  //     new FilesystemVerifierAction());
   shared_ptr<OmahaRequestAction> update_complete_action(
       new OmahaRequestAction(system_state_,
                              new OmahaEvent(OmahaEvent::kTypeUpdateComplete),
@@ -1069,16 +1069,16 @@ void UpdateAttempter::ActionCompleted(ActionProcessor* processor,
   // Find out which action completed (successfully).
   if (type == DownloadAction::StaticType()) {
     SetStatusAndNotify(UpdateStatus::FINALIZING);
-  } else if (type == FilesystemVerifierAction::StaticType()) {
-    // Log the system properties before the postinst and after the file system
-    // is verified. It used to be done in the postinst itself. But postinst
-    // cannot do this anymore. On the other hand, these logs are frequently
-    // looked at and it is preferable not to scatter them in random location in
-    // the log and rather log it right before the postinst. The reason not do
-    // this in the |PostinstallRunnerAction| is to prevent dependency from
-    // libpayload_consumer to libupdate_engine.
-    LogImageProperties();
-  }
+   } // else if (type == FilesystemVerifierAction::StaticType()) {
+  //   // Log the system properties before the postinst and after the file system
+  //   // is verified. It used to be done in the postinst itself. But postinst
+  //   // cannot do this anymore. On the other hand, these logs are frequently
+  //   // looked at and it is preferable not to scatter them in random location in
+  //   // the log and rather log it right before the postinst. The reason not do
+  //   // this in the |PostinstallRunnerAction| is to prevent dependency from
+  //   // libpayload_consumer to libupdate_engine.
+  //   LogImageProperties();
+  // }
 }
 
 void UpdateAttempter::BytesReceived(uint64_t bytes_progressed,

@@ -47,74 +47,74 @@ enum class VerifierStep {
   kVerifySourceHash,
 };
 
-class FilesystemVerifierAction : public InstallPlanAction {
- public:
-  FilesystemVerifierAction() = default;
+// class FilesystemVerifierAction : public InstallPlanAction {
+//  public:
+//   FilesystemVerifierAction() = default;
 
-  void PerformAction() override;
-  void TerminateProcessing() override;
+//   void PerformAction() override;
+//   void TerminateProcessing() override;
 
-  // Used for testing. Return true if Cleanup() has not yet been called due
-  // to a callback upon the completion or cancellation of the verifier action.
-  // A test should wait until IsCleanupPending() returns false before
-  // terminating the main loop.
-  bool IsCleanupPending() const;
+//   // Used for testing. Return true if Cleanup() has not yet been called due
+//   // to a callback upon the completion or cancellation of the verifier action.
+//   // A test should wait until IsCleanupPending() returns false before
+//   // terminating the main loop.
+//   bool IsCleanupPending() const;
 
-  // Debugging/logging
-  static std::string StaticType() { return "FilesystemVerifierAction"; }
-  std::string Type() const override { return StaticType(); }
+//   // Debugging/logging
+//   static std::string StaticType() { return "FilesystemVerifierAction"; }
+//   std::string Type() const override { return StaticType(); }
 
- private:
-  // Starts the hashing of the current partition. If there aren't any partitions
-  // remaining to be hashed, it finishes the action.
-  void StartPartitionHashing();
+//  private:
+//   // Starts the hashing of the current partition. If there aren't any partitions
+//   // remaining to be hashed, it finishes the action.
+//   void StartPartitionHashing();
 
-  // Schedules the asynchronous read of the filesystem.
-  void ScheduleRead();
+//   // Schedules the asynchronous read of the filesystem.
+//   void ScheduleRead();
 
-  // Called from the main loop when a single read from |src_stream_| succeeds or
-  // fails, calling OnReadDoneCallback() and OnReadErrorCallback() respectively.
-  void OnReadDoneCallback(size_t bytes_read);
-  void OnReadErrorCallback(const brillo::Error* error);
+//   // Called from the main loop when a single read from |src_stream_| succeeds or
+//   // fails, calling OnReadDoneCallback() and OnReadErrorCallback() respectively.
+//   void OnReadDoneCallback(size_t bytes_read);
+//   void OnReadErrorCallback(const brillo::Error* error);
 
-  // When the read is done, finalize the hash checking of the current partition
-  // and continue checking the next one.
-  void FinishPartitionHashing();
+//   // When the read is done, finalize the hash checking of the current partition
+//   // and continue checking the next one.
+//   void FinishPartitionHashing();
 
-  // Cleans up all the variables we use for async operations and tells the
-  // ActionProcessor we're done w/ |code| as passed in. |cancelled_| should be
-  // true if TerminateProcessing() was called.
-  void Cleanup(ErrorCode code);
+//   // Cleans up all the variables we use for async operations and tells the
+//   // ActionProcessor we're done w/ |code| as passed in. |cancelled_| should be
+//   // true if TerminateProcessing() was called.
+//   void Cleanup(ErrorCode code);
 
-  // The type of the partition that we are verifying.
-  VerifierStep verifier_step_ = VerifierStep::kVerifyTargetHash;
+//   // The type of the partition that we are verifying.
+//   VerifierStep verifier_step_ = VerifierStep::kVerifyTargetHash;
 
-  // The index in the install_plan_.partitions vector of the partition currently
-  // being hashed.
-  size_t partition_index_{0};
+//   // The index in the install_plan_.partitions vector of the partition currently
+//   // being hashed.
+//   size_t partition_index_{0};
 
-  // If not null, the FileStream used to read from the device.
-  brillo::StreamPtr src_stream_;
+//   // If not null, the FileStream used to read from the device.
+//   brillo::StreamPtr src_stream_;
 
-  // Buffer for storing data we read.
-  brillo::Blob buffer_;
+//   // Buffer for storing data we read.
+//   brillo::Blob buffer_;
 
-  bool read_done_{false};  // true if reached EOF on the input stream.
-  bool cancelled_{false};  // true if the action has been cancelled.
+//   bool read_done_{false};  // true if reached EOF on the input stream.
+//   bool cancelled_{false};  // true if the action has been cancelled.
 
-  // The install plan we're passed in via the input pipe.
-  InstallPlan install_plan_;
+//   // The install plan we're passed in via the input pipe.
+//   InstallPlan install_plan_;
 
-  // Calculates the hash of the data.
-  std::unique_ptr<HashCalculator> hasher_;
+//   // Calculates the hash of the data.
+//   std::unique_ptr<HashCalculator> hasher_;
 
-  // Reads and hashes this many bytes from the head of the input stream. This
-  // field is initialized from the corresponding InstallPlan::Partition size,
-  // when the partition starts to be hashed.
-  int64_t remaining_size_{0};
+//   // Reads and hashes this many bytes from the head of the input stream. This
+//   // field is initialized from the corresponding InstallPlan::Partition size,
+//   // when the partition starts to be hashed.
+//   int64_t remaining_size_{0};
 
-  DISALLOW_COPY_AND_ASSIGN(FilesystemVerifierAction);
-};
+//   DISALLOW_COPY_AND_ASSIGN(FilesystemVerifierAction);
+// };
 
 }  // namespace chromeos_update_engine
 

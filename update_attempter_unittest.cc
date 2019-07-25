@@ -345,10 +345,10 @@ TEST_F(UpdateAttempterTest, GetErrorCodeForActionTest) {
   EXPECT_EQ(ErrorCode::kOmahaResponseHandlerError,
             GetErrorCodeForAction(&omaha_response_handler_action,
                                   ErrorCode::kError));
-  FilesystemVerifierAction filesystem_verifier_action;
-  EXPECT_EQ(ErrorCode::kFilesystemVerifierError,
-            GetErrorCodeForAction(&filesystem_verifier_action,
-                                  ErrorCode::kError));
+  // FilesystemVerifierAction filesystem_verifier_action;
+  // EXPECT_EQ(ErrorCode::kFilesystemVerifierError,
+  //           GetErrorCodeForAction(&filesystem_verifier_action,
+  //                                 ErrorCode::kError));
   PostinstallRunnerAction postinstall_runner_action(
       fake_system_state.fake_boot_control(), fake_system_state.fake_hardware());
   EXPECT_EQ(ErrorCode::kPostinstallRunnerError,
@@ -438,7 +438,7 @@ const string kUpdateActionTypes[] = {  // NOLINT(runtime/string)
   OmahaRequestAction::StaticType(),
   DownloadAction::StaticType(),
   OmahaRequestAction::StaticType(),
-  FilesystemVerifierAction::StaticType(),
+  // FilesystemVerifierAction::StaticType(),
   PostinstallRunnerAction::StaticType(),
   OmahaRequestAction::StaticType()
 };

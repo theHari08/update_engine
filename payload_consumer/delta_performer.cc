@@ -980,43 +980,43 @@ bool DeltaPerformer::PerformMoveOperation(const InstallOperation& operation) {
   return true;
 }
 
-bool DeltaPerformer::ValidateSourceHash(const brillo::Blob& calculated_hash,
-                                        const InstallOperation& operation,
-                                        const FileDescriptorPtr source_fd,
-                                        ErrorCode* error) {
-  brillo::Blob expected_source_hash(operation.src_sha256_hash().begin(),
-                                    operation.src_sha256_hash().end());
-  if (calculated_hash != expected_source_hash) {
-    LOG(ERROR) << "The hash of the source data on disk for this operation "
-               << "doesn't match the expected value. This could mean that the "
-               << "delta update payload was targeted for another version, or "
-               << "that the source partition was modified after it was "
-               << "installed, for example, by mounting a filesystem.";
-    LOG(ERROR) << "Expected:   sha256|hex = "
-               << base::HexEncode(expected_source_hash.data(),
-                                  expected_source_hash.size());
-    LOG(ERROR) << "Calculated: sha256|hex = "
-               << base::HexEncode(calculated_hash.data(),
-                                  calculated_hash.size());
+// bool DeltaPerformer::ValidateSourceHash(const brillo::Blob& calculated_hash,
+//                                         const InstallOperation& operation,
+//                                         const FileDescriptorPtr source_fd,
+//                                         ErrorCode* error) {
+//   brillo::Blob expected_source_hash(operation.src_sha256_hash().begin(),
+//                                     operation.src_sha256_hash().end());
+//   if (calculated_hash != expected_source_hash) {
+//     LOG(ERROR) << "The hash of the source data on disk for this operation "
+//                << "doesn't match the expected value. This could mean that the "
+//                << "delta update payload was targeted for another version, or "
+//                << "that the source partition was modified after it was "
+//                << "installed, for example, by mounting a filesystem.";
+//     LOG(ERROR) << "Expected:   sha256|hex = "
+//                << base::HexEncode(expected_source_hash.data(),
+//                                   expected_source_hash.size());
+//     LOG(ERROR) << "Calculated: sha256|hex = "
+//                << base::HexEncode(calculated_hash.data(),
+//                                   calculated_hash.size());
 
-    vector<string> source_extents;
-    for (const Extent& ext : operation.src_extents()) {
-      source_extents.push_back(
-          base::StringPrintf("%" PRIu64 ":%" PRIu64,
-                             static_cast<uint64_t>(ext.start_block()),
-                             static_cast<uint64_t>(ext.num_blocks())));
-    }
-    LOG(ERROR) << "Operation source (offset:size) in blocks: "
-               << base::JoinString(source_extents, ",");
+//     vector<string> source_extents;
+//     for (const Extent& ext : operation.src_extents()) {
+//       source_extents.push_back(
+//           base::StringPrintf("%" PRIu64 ":%" PRIu64,
+//                              static_cast<uint64_t>(ext.start_block()),
+//                              static_cast<uint64_t>(ext.num_blocks())));
+//     }
+//     LOG(ERROR) << "Operation source (offset:size) in blocks: "
+//                << base::JoinString(source_extents, ",");
 
-    // Log remount history if this device is an ext4 partition.
-    LogMountHistory(source_fd);
+//     // Log remount history if this device is an ext4 partition.
+//     LogMountHistory(source_fd);
 
-    *error = ErrorCode::kDownloadStateInitializationError;
-    return false;
-  }
-  return true;
-}
+//     *error = ErrorCode::kDownloadStateInitializationError;
+//     return false;
+//   }
+//   return true;
+// }
 
 bool DeltaPerformer::PerformSourceCopyOperation(
     const InstallOperation& operation, ErrorCode* error) {
@@ -1033,10 +1033,10 @@ bool DeltaPerformer::PerformSourceCopyOperation(
                                                      block_size_,
                                                      &source_hash));
 
-  if (operation.has_src_sha256_hash()) {
-    TEST_AND_RETURN_FALSE(
-        ValidateSourceHash(source_hash, operation, source_fd_, error));
-  }
+  // if (operation.has_src_sha256_hash()) {
+  //   TEST_AND_RETURN_FALSE(
+  //       ValidateSourceHash(source_hash, operation, source_fd_, error));
+  // }
 
   return true;
 }
@@ -1183,13 +1183,13 @@ bool DeltaPerformer::PerformSourceBsdiffOperation(
   if (operation.has_dst_length())
     TEST_AND_RETURN_FALSE(operation.dst_length() % block_size_ == 0);
 
-  if (operation.has_src_sha256_hash()) {
-    brillo::Blob source_hash;
-    TEST_AND_RETURN_FALSE(fd_utils::ReadAndHashExtents(
-        source_fd_, operation.src_extents(), block_size_, &source_hash));
-    TEST_AND_RETURN_FALSE(
-        ValidateSourceHash(source_hash, operation, source_fd_, error));
-  }
+  // if (operation.has_src_sha256_hash()) {
+  //   brillo::Blob source_hash;
+  //   TEST_AND_RETURN_FALSE(fd_utils::ReadAndHashExtents(
+  //       source_fd_, operation.src_extents(), block_size_, &source_hash));
+  //   TEST_AND_RETURN_FALSE(
+  //       ValidateSourceHash(source_hash, operation, source_fd_, error));
+  // }
 
   auto reader = std::make_unique<DirectExtentReader>();
   TEST_AND_RETURN_FALSE(
@@ -1300,13 +1300,13 @@ bool DeltaPerformer::PerformPuffDiffOperation(const InstallOperation& operation,
   TEST_AND_RETURN_FALSE(buffer_offset_ == operation.data_offset());
   TEST_AND_RETURN_FALSE(buffer_.size() >= operation.data_length());
 
-  if (operation.has_src_sha256_hash()) {
-    brillo::Blob source_hash;
-    TEST_AND_RETURN_FALSE(fd_utils::ReadAndHashExtents(
-        source_fd_, operation.src_extents(), block_size_, &source_hash));
-    TEST_AND_RETURN_FALSE(
-        ValidateSourceHash(source_hash, operation, source_fd_, error));
-  }
+  // if (operation.has_src_sha256_hash()) {
+  //   brillo::Blob source_hash;
+  //   TEST_AND_RETURN_FALSE(fd_utils::ReadAndHashExtents(
+  //       source_fd_, operation.src_extents(), block_size_, &source_hash));
+  //   TEST_AND_RETURN_FALSE(
+  //       ValidateSourceHash(source_hash, operation, source_fd_, error));
+  // }
 
   auto reader = std::make_unique<DirectExtentReader>();
   TEST_AND_RETURN_FALSE(

@@ -418,10 +418,10 @@ bool UpdateAttempterAndroid::VerifyPayloadApplicable(
         return LogAndSetError(
             error, FROM_HERE, "Failed to hash " + partition_path);
       }
-      if (!DeltaPerformer::ValidateSourceHash(
-              source_hash, operation, fd, &errorcode)) {
-        return false;
-      }
+      // if (!DeltaPerformer::ValidateSourceHash(
+      //         source_hash, operation, fd, &errorcode)) {
+      //   return false;
+      // }
     }
     fd->Close();
   }
@@ -655,8 +655,8 @@ void UpdateAttempterAndroid::BuildUpdateActions(const string& url) {
                          nullptr,           // system_state, not used.
                          download_fetcher,  // passes ownership
                          true /* is_interactive */));
-  shared_ptr<FilesystemVerifierAction> filesystem_verifier_action(
-      new FilesystemVerifierAction());
+  // shared_ptr<FilesystemVerifierAction> filesystem_verifier_action(
+  //     new FilesystemVerifierAction());
 
   shared_ptr<PostinstallRunnerAction> postinstall_runner_action(
       new PostinstallRunnerAction(boot_control_, hardware_));
@@ -668,15 +668,13 @@ void UpdateAttempterAndroid::BuildUpdateActions(const string& url) {
 
   actions_.push_back(shared_ptr<AbstractAction>(install_plan_action));
   actions_.push_back(shared_ptr<AbstractAction>(download_action));
-  actions_.push_back(shared_ptr<AbstractAction>(filesystem_verifier_action));
+  // actions_.push_back(shared_ptr<AbstractAction>(filesystem_verifier_action));
   actions_.push_back(shared_ptr<AbstractAction>(postinstall_runner_action));
 
   // Bond them together. We have to use the leaf-types when calling
   // BondActions().
   BondActions(install_plan_action.get(), download_action.get());
-  BondActions(download_action.get(), filesystem_verifier_action.get());
-  BondActions(filesystem_verifier_action.get(),
-              postinstall_runner_action.get());
+  BondActions(download_action.get(), postinstall_runner_action.get());
 
   // Enqueue the actions.
   for (const shared_ptr<AbstractAction>& action : actions_)
